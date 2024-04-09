@@ -14,6 +14,26 @@ export default (ctx: IPluginContext, pluginOpts) => {
     console.log('这里可以修改webpack配置')
     // 示例：利用webpackChain向html中插入脚本
     if (process.env.TARO_ENV !== 'h5') return
+    chain.merge({
+      module: {
+          rules: [
+              {
+                test: /\.[tj]sx?$/i,
+                include: path.resolve(__dirname, '../src'),
+                use: [
+                  {
+                      loader: 'thread-loader',
+                  },{
+                      loader: 'babel-loader',
+                      options: {
+                        cacheDirectory: true, 
+                      }
+                  }
+                ],
+              },
+          ],
+      },
+  })
     chain
       .plugin('htmlWebpackPlugin')
       .tap(([pluginConfig]) => {
